@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
+
 using WebShopApp.Infrastructure.Data.Domain;
 
 namespace WebShopApp.Infrastructure.Data.Infrastructure
@@ -24,7 +26,7 @@ namespace WebShopApp.Infrastructure.Data.Infrastructure
             SeedCategories(dataCategory);
 
             var dataBrand = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            SeedBrands(dataCategory);
+            SeedBrands(dataBrand);
 
             return app;
         }
@@ -52,15 +54,13 @@ namespace WebShopApp.Infrastructure.Data.Infrastructure
 
             if (await userManager.FindByNameAsync("admin") == null)
             {
-                ApplicationUser user = new ApplicationUser()
-                {
-                    FirstName = "admin",
-                    LastName = "admin",
-                    UserName = "admin",
-                    Email = "admin@admin.com",
-                    Address = "admin address",
-                    PhoneNumber = "0888888888"
-                };
+                ApplicationUser user = new ApplicationUser();
+                user.FirstName = "admin";
+                user.LastName = "admin";
+                user.UserName = "admin";
+                user.Email = "admin@admin.com";
+                user.Address = "admin address";
+                user.PhoneNumber = "0888888888";
 
                 var result = await userManager.CreateAsync(user, "Admin123456");
 
@@ -71,22 +71,24 @@ namespace WebShopApp.Infrastructure.Data.Infrastructure
             }
         }
 
-        private static void SeedCategories(ApplicationDbContext dataCategory) 
+        private static void SeedCategories(ApplicationDbContext dataCategory)
         {
             if (dataCategory.Categories.Any())
             {
                 return;
             }
+
             dataCategory.Categories.AddRange(new[]
             {
-                new Category {CategoryName="Laptop" },
-                new Category {CategoryName="Computer" },
-                new Category {CategoryName="Monitor" },
-                new Category {CategoryName="Accessory" },
-                new Category {CategoryName="TV" },
-                new Category {CategoryName="Mobile phone" },
-                new Category {CategoryName="Smart watch" },
+                new Category { CategoryName = "Laptop" },
+                new Category { CategoryName = "Computer" },
+                new Category { CategoryName = "Monitor" },
+                new Category { CategoryName = "Accessory" },
+                new Category { CategoryName = "TV" },
+                new Category { CategoryName = "Mobile phone" },
+                new Category { CategoryName = "Smart watch" }
             });
+
             dataCategory.SaveChanges();
         }
 
@@ -96,18 +98,19 @@ namespace WebShopApp.Infrastructure.Data.Infrastructure
             {
                 return;
             }
+
             dataBrand.Brands.AddRange(new[]
             {
-                new Brand {BrandName="Acer" },
-                new Brand {BrandName="Asus" },
-                new Brand {BrandName="Apple" },
-                new Brand {BrandName="Dell" },
-                new Brand {BrandName="HP" },
-                new Brand {BrandName="Huawei" },
-                new Brand {BrandName="Lenovo" },
-                new Brand {BrandName="Samsung" },
-
+                new Brand { BrandName = "Acer" },
+                new Brand { BrandName = "Asus" },
+                new Brand { BrandName = "Apple" },
+                new Brand { BrandName = "Dell" },
+                new Brand { BrandName = "HP" },
+                new Brand { BrandName = "Huawei" },
+                new Brand { BrandName = "Lenovo" },
+                new Brand { BrandName = "Samsung" }
             });
+
             dataBrand.SaveChanges();
         }
     }
